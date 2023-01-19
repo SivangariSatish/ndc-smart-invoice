@@ -1,5 +1,9 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import Radio from "@mui/material/Radio";
+import FormLabel from "@mui/material/FormLabel"
+import { RadioGroup } from '@mui/material';
+
 const SmartInvoiceDetails = () => {
 
 
@@ -11,6 +15,15 @@ const SmartInvoiceDetails = () => {
       field: 'emdAirlineTax',
       headerName: 'EMD/AirlineTax',     
       width: 90,
+      renderCell: (params) => (
+        <RadioGroup>
+           <FormLabel
+          value="top"
+          control={<Radio/>}
+          label="EMD"          
+        />
+        </RadioGroup>
+      )
     },
     {
       field: 'phonefee',
