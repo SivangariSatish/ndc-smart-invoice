@@ -1,8 +1,8 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Radio from "@mui/material/Radio";
-import FormLabel from "@mui/material/FormLabel"
-import { RadioGroup } from '@mui/material';
+import FormControlLabel from "@mui/material/FormControlLabel"
+import { Checkbox, RadioGroup } from '@mui/material';
 
 const SmartInvoiceDetails = () => {
 
@@ -10,31 +10,47 @@ const SmartInvoiceDetails = () => {
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'ticketNumber', headerName: 'TicketNumber', width: 130 },
-    { field: 'travel', headerName: 'Travel', width: 130 },
+    { field: 'travel', headerName: 'Travel', width: 290,
+    renderCell: (params) => (
+      <RadioGroup style={{ marginLeft: 15, marginBottom: 0 }}>
+        <div style={{ marginTop: 2, marginBottom: 7 }}>
+          <FormControlLabel
+            value="Domestic"
+            control={<Radio value="Domestic" />}
+            label='Domestic'
+          />
+          <FormControlLabel
+            value="International"
+            control={<Radio value="International" />}
+            label='International'
+          />
+
+        </div>
+        </RadioGroup>
+    ) },
     {
       field: 'emdAirlineTax',
       headerName: 'EMD/AirlineTax',     
-      width: 90,
-      renderCell: (params) => (
-        <RadioGroup>
-           <FormLabel
-          value="top"
-          control={<Radio/>}
-          label="EMD"          
-        />
-        </RadioGroup>
-      )
+      width: 90     
     },
     {
       field: 'phonefee',
       headerName: 'Phone Fee',
       type: 'bool',
       width: 90,
+      renderCell: (params) => (
+        <Checkbox style={{ marginLeft: 15, marginBottom: 0 }}>
+          </Checkbox>
+      )
     },
     {
       field: 'changefee',
       headerName: 'Change Fee',
       width: 90,
+      renderCell: (params) => (
+        <Checkbox style={{ marginLeft: 15, marginBottom: 0 }}>
+          </Checkbox>
+      )
     },
   ];
   const rows = [
