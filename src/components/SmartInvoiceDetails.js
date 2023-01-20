@@ -46,7 +46,7 @@ const SmartInvoiceDetails = () => {
     { id: 6, ticketNumber: '0143344444', travel: 'International', emdAirlineTax: 'EMD',phonefee:0 ,changefee:1 },
     { id: 7, ticketNumber: '0123344345', travel: 'Domestic', emdAirlineTax: 'EMD',phonefee:0 ,changefee:1 },
     { id: 8, ticketNumber: '0123344446', travel: 'International', emdAirlineTax: 'EMD',phonefee:0 ,changefee:1 },
-    { id: 9, ticketNumber: '0123344452', travel: 'Domestic', emdAirlineTax: 'EMD',phonefee:0 ,changefee:1},
+    { id: 9, ticketNumber: '0123344652', travel: 'Domestic', emdAirlineTax: 'EMD',phonefee:0 ,changefee:1},
   ];
     return (
       <div style={{ height: 400, width: '100%' }}>
