@@ -2,11 +2,24 @@ import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel"
-import { Checkbox, RadioGroup } from '@mui/material';
+import { Button, Checkbox, RadioGroup } from '@mui/material';
+import jsPDF from 'jspdf';
+import imgage from './assests/logo512.png';
 
 const SmartInvoiceDetails = () => {
 
-
+ const generatePDF = () => {
+    var doc = new jsPDF('p', 'pt');
+    
+    doc.text(20, 20, 'This is the first title.')
+    doc.addFont('helvetica', 'normal')
+    doc.text(20, 60, 'This is the second title.')
+    doc.text(20, 100, 'This is the thrid title.')      
+    var img = new Image()
+    img.src = imgage;
+    doc.addImage(img, 'png', 10, 78, 12, 15)
+    doc.save('demo.pdf')
+}
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'ticketNumber', headerName: 'TicketNumber', width: 130 },
@@ -72,7 +85,8 @@ const SmartInvoiceDetails = () => {
         columns={columns}       
         checkboxSelection
       />
-     
+     <Button variant="outlined" onClick={generatePDF}>GENERATE</Button> 
+     <Button variant="outlined">CLOSE</Button>
     </div> 
     );
 };
