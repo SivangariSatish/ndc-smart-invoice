@@ -5,7 +5,6 @@ import image from './assests/WJ_AU.png';
 
 
 export const WebJetInvoicePDF = (invoiceData,fileName) => {
-    
    const ticketNumber=invoiceData[0].ticketNumber;
     var doc = new jsPDF('p', 'pt');
     doc.setFont('verdana', 'bold');
