@@ -6,10 +6,7 @@ function App() {
   return (
     <div className="App">
            
-        <p>
          <SmartInvoiceDetails>Test</SmartInvoiceDetails>
-        </p>
-        
      
     </div>
   );

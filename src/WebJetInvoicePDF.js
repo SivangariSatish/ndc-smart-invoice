@@ -2,9 +2,7 @@
 import jsPDF from 'jspdf';
 import image from './assests/WJ_AU.png';
 
-export const WebJetInvoicePDF = (invoiceData,fileName) => {
-    
-   //const flighDetail=invoiceData[0].flighDetail;
+export const WebJetInvoicePDF = (invoiceData,fileName) => {   
     var doc = new jsPDF('p', 'pt');
     doc.setFont('verdana', 'bold');
     doc.setFontSize(18.5);
