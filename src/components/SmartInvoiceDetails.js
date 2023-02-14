@@ -9,36 +9,19 @@ import PropTypes from "prop-types";
 
 const SmartInvoiceDetails = () => {
   const [selectedRows, setSelectedRows] = React.useState([]);
-  const cellClickRef = React.useRef(null);
- 
-  // const [enable,setEnable]=React.useState(false);
-  const generatePDF = () => {
-    console.log(selectedRows);
-    WebJetInvoicePDF(selectedRows, "WebJetInvoice.pdf");
+  const generatePDF = (selected) => {
+    console.log(selected);
+     WebJetInvoicePDF(selected, "WebJetInvoice.pdf");
   };
 
-  const serviceFeeChangeHandler = (e, params) => {
-    if (e.target.checked) {
-      const row = selectedRows.find((t) => t.TicketNumber === params.id);
-      row.ServiceFeeIsSelected = true;
-      setSelectedRows(...selectedRows, row);
-    }
-    if (!e.target.checked) {
-      const row = selectedRows.find((t) => t.TicketNumber === params.id);
-      row.ServiceFeeIsSelected = false;
-      setSelectedRows(...selectedRows, row);
-    }
-
-    // row.ServiceFeeIsSelected = !row.ServiceFeeIsSelected;
-    //console.log(e);
-
-    // setSelectedRows(...selectedRows, row);
+  const serviceFeeChangeHandler = (row) => {
+    row.ServiceFeeIsSelected = !row.ServiceFeeIsSelected;
+    setSelectedRows(selectedRows);
   };
   /*global spNdcInvHelper*/
   const exchangeInformations = JSON.parse(
     spNdcInvHelper.getExchangeInformations()
   );
-  console.log(selectedRows);
   const columns = [
     { field: "TicketNumber", headerName: "Ticket Number", width: 200 },
     {
@@ -80,14 +63,23 @@ const SmartInvoiceDetails = () => {
       defaultValue: "EMD",
     },
     {
-      field: "serviceFee",
+      field: "isServiceFeeSelected",
       headerName: "Service Fee",
       type: "bool",
       width: 90,
       renderCell: (params) => (
         <Checkbox
           style={{ marginLeft: 15, marginBottom: 0 }}
-          onChange={(e) => serviceFeeChangeHandler(e,params)}
+          onChange={(e) =>
+            serviceFeeChangeHandler(
+              selectedRows.find((t) => t.TicketNumber === params.id)
+            )
+          }
+          disabled={
+            !selectedRows.length ||
+            !selectedRows.find((r) => r.TicketNumber === params.id) ||
+            !selectedRows.find((r) => r.TicketNumber === params.id).IsSelected
+          }
         ></Checkbox>
       ),
     },
@@ -96,11 +88,13 @@ const SmartInvoiceDetails = () => {
       headerName: "Change Fee",
       width: 90,
       renderCell: (params) => (
-        <Checkbox style={{ marginLeft: 15, marginBottom: 0 }} defaultChecked></Checkbox>
+        <Checkbox
+          style={{ marginLeft: 15, marginBottom: 0 }}
+          defaultChecked
+        ></Checkbox>
       ),
     },
   ];
-
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid
@@ -112,28 +106,23 @@ const SmartInvoiceDetails = () => {
             color: "primary.main",
           },
         }}
-        onCellClick={() => (cellClickRef.current = true)}
         rows={exchangeInformations}
         getRowId={(row) => row.TicketNumber}
         columns={columns}
         checkboxSelection
+        disableSelectionOnClick
         onSelectionModelChange={(ticketNumbers) => {
-          //setEnable(true);
-          // console.log(enable);
-          console.log(ticketNumbers);
-          console.log(exchangeInformations);
           const selected = exchangeInformations.filter((e) =>
             ticketNumbers.includes(e.TicketNumber)
           );
-
+          selected.forEach((t) => (t.IsSelected = true));
           console.log(selected);
 
           setSelectedRows(selected);
         }}
         {...exchangeInformations}
-       
       />
-      <Button variant="outlined" onClick={generatePDF}>
+      <Button variant="outlined"  disabled={selectedRows.legnth} onClick={() => generatePDF(selectedRows)}>
         GENERATE
       </Button>
       <Button variant="outlined">CLOSE</Button>

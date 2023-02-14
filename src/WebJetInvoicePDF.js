@@ -4,7 +4,6 @@ import moment from "moment";
 import config from "./config.json";
 
 export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
-  console.log(invoiceDatas); // this is an array
   var doc = new jsPDF("p", "pt");
   console.log(doc.getFontList());
   doc.setFont("courier", "bold");
@@ -22,7 +21,6 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
   let totalGST = 0.0;
   let serviceFee = config.ServiceFee;
   let serviceGSTFee = config.ServiceGSTFee;
-  console.log(serviceGSTFee);
 
   invoiceDatas.forEach((e, i) => {
     e.Segments.forEach((segment) => {
