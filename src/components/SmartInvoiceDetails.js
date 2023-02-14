@@ -9,27 +9,55 @@ import PropTypes from "prop-types";
 
 const SmartInvoiceDetails = () => {
   const [selectedRows, setSelectedRows] = React.useState([]);
+  const cellClickRef = React.useRef(null);
+ 
+  // const [enable,setEnable]=React.useState(false);
   const generatePDF = () => {
+    console.log(selectedRows);
     WebJetInvoicePDF(selectedRows, "WebJetInvoice.pdf");
+  };
+
+  const serviceFeeChangeHandler = (e, params) => {
+    if (e.target.checked) {
+      const row = selectedRows.find((t) => t.TicketNumber === params.id);
+      row.ServiceFeeIsSelected = true;
+      setSelectedRows(...selectedRows, row);
+    }
+    if (!e.target.checked) {
+      const row = selectedRows.find((t) => t.TicketNumber === params.id);
+      row.ServiceFeeIsSelected = false;
+      setSelectedRows(...selectedRows, row);
+    }
+
+    // row.ServiceFeeIsSelected = !row.ServiceFeeIsSelected;
+    //console.log(e);
+
+    // setSelectedRows(...selectedRows, row);
   };
   /*global spNdcInvHelper*/
   const exchangeInformations = JSON.parse(
     spNdcInvHelper.getExchangeInformations()
   );
-  console.log(exchangeInformations.length);
+  console.log(selectedRows);
   const columns = [
-    { field: "TicketNumber", headerName: "Ticket Number", width: 200 },  
-    {field:"Name", headerName:"Passenger Name",valueGetter: (params) => {    
-      
-      return params.row.Passenger.FullName
+    { field: "TicketNumber", headerName: "Ticket Number", width: 200 },
+    {
+      field: "Name",
+      headerName: "Passenger Name",
+      valueGetter: (params) => {
+        return params.row.Passenger.FullName;
+      },
+      width: 300,
     },
-    width:300} , 
     {
       field: "travel",
       headerName: "Travel",
       width: 290,
       renderCell: (params) => (
-        <RadioGroup style={{ marginLeft: 15, marginBottom: 0 }} defaultValue="Domestic">
+        <RadioGroup
+          style={{ marginLeft: 15, marginBottom: 0 }}
+          defaultValue="Domestic"
+        >
           <div style={{ marginTop: 2, marginBottom: 7 }}>
             <FormControlLabel
               value="Domestic"
@@ -49,7 +77,7 @@ const SmartInvoiceDetails = () => {
       field: "emdAirlineTax",
       headerName: "EMD/AirlineTax",
       width: 90,
-      defaultValue:'EMD'
+      defaultValue: "EMD",
     },
     {
       field: "serviceFee",
@@ -57,7 +85,10 @@ const SmartInvoiceDetails = () => {
       type: "bool",
       width: 90,
       renderCell: (params) => (
-        <Checkbox style={{ marginLeft: 15, marginBottom: 0 }}></Checkbox>
+        <Checkbox
+          style={{ marginLeft: 15, marginBottom: 0 }}
+          onChange={(e) => serviceFeeChangeHandler(e,params)}
+        ></Checkbox>
       ),
     },
     {
@@ -69,7 +100,7 @@ const SmartInvoiceDetails = () => {
       ),
     },
   ];
-  
+
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid
@@ -81,21 +112,26 @@ const SmartInvoiceDetails = () => {
             color: "primary.main",
           },
         }}
+        onCellClick={() => (cellClickRef.current = true)}
         rows={exchangeInformations}
-        getRowId={(row) => row.TicketNumber}        
+        getRowId={(row) => row.TicketNumber}
         columns={columns}
         checkboxSelection
         onSelectionModelChange={(ticketNumbers) => {
+          //setEnable(true);
+          // console.log(enable);
           console.log(ticketNumbers);
           console.log(exchangeInformations);
-          const selected = exchangeInformations.filter(
-            (e) => ticketNumbers.includes(e.TicketNumber)
+          const selected = exchangeInformations.filter((e) =>
+            ticketNumbers.includes(e.TicketNumber)
           );
+
           console.log(selected);
 
           setSelectedRows(selected);
         }}
         {...exchangeInformations}
+       
       />
       <Button variant="outlined" onClick={generatePDF}>
         GENERATE
