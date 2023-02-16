@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/ndc-smart-invoice/static/css/main.e3a7d54b.css",
+    "main.js": "/ndc-smart-invoice/static/js/main.9a4b323c.js",
+    "static/js/498.5a683304.chunk.js": "/ndc-smart-invoice/static/js/498.5a683304.chunk.js",
+    "static/js/703.30244866.chunk.js": "/ndc-smart-invoice/static/js/703.30244866.chunk.js",
+    "static/js/142.2d31ed4e.chunk.js": "/ndc-smart-invoice/static/js/142.2d31ed4e.chunk.js",
+    "static/js/787.ced7aa93.chunk.js": "/ndc-smart-invoice/static/js/787.ced7aa93.chunk.js",
+    "static/media/WJ_AU.png": "/ndc-smart-invoice/static/media/WJ_AU.cf94a13e033637d1a10a.png",
+    "index.html": "/ndc-smart-invoice/index.html",
+    "main.e3a7d54b.css.map": "/ndc-smart-invoice/static/css/main.e3a7d54b.css.map",
+    "main.9a4b323c.js.map": "/ndc-smart-invoice/static/js/main.9a4b323c.js.map",
+    "498.5a683304.chunk.js.map": "/ndc-smart-invoice/static/js/498.5a683304.chunk.js.map",
+    "703.30244866.chunk.js.map": "/ndc-smart-invoice/static/js/703.30244866.chunk.js.map",
+    "142.2d31ed4e.chunk.js.map": "/ndc-smart-invoice/static/js/142.2d31ed4e.chunk.js.map",
+    "787.ced7aa93.chunk.js.map": "/ndc-smart-invoice/static/js/787.ced7aa93.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e3a7d54b.css",
+    "static/js/main.9a4b323c.js"
+  ]
+}
