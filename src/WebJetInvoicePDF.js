@@ -22,6 +22,7 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
   let serviceFee = config.ServiceFee;
   let serviceGSTFee = config.ServiceGSTFee;
   const GenerateHeader = (doc) => {
+    console.log(total);
     var img = new Image();
     img.src = image;
     doc.addImage(img, "png", 350, 8);
@@ -82,25 +83,29 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
           )
         : 0.0
     );
-    doc.text(8, 200 + 100 * index, " Airline Change Fee (Airline imposed fee)");
-    doc.text(
+   
+    doc.text(8, 200 + 100 * index, " Airline Change Fee (Airline imposed fee)")
+    if(invoiceData.ChangeFeeIsSelected? doc.text(
       450,
       200 + 100 * index,
       "$" + invoiceData.ChangeFeeAmount.replace("@", ".") + "^"
-    );
+  ):doc.text(
+    450,
+    200 + 100 * index,
+    "$0.00"));
     if (
-      serviceFee !== ""
+      serviceFee !== "" && invoiceData.ServiceFeeIsSelected
         ? doc.text(8, 220 + 100 * index, "Service Charge Fee")
         : " "
     );
     if (
-      serviceFee !== ""
+      serviceFee !== "" && invoiceData.ServiceFeeIsSelected
         ? doc.text(450, 220 + 100 * index, "$" + serviceFee + "*")
         : null
     );
     doc.setLineWidth(1);
     if (
-      serviceFee !== " "
+      serviceFee !== " " && invoiceData.ServiceFeeIsSelected
         ? doc.line(10, 230 + 100 * index, 600, 230 + 100 * index)
         : doc.line(10, 210 + 100 * index, 600, 210 + 100 * index)
     );
@@ -113,7 +118,8 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
     total,
     totalGST,
     footerIndex,
-    serviceGSTFee
+    serviceFeeVal,
+    serviceGSTFee,travelType
   ) => {
     doc.text(
       10,
@@ -126,7 +132,7 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
     doc.setTextColor("black");
     total =
       parseFloat(total) +
-      parseFloat(serviceGSTFee === "" ? 0.0 : serviceGSTFee);
+      parseFloat(serviceGSTFee !== ""  && serviceFeeVal ?  serviceGSTFee:0.00);
     doc.text(10, 300 + footerIndex + 100 * index, "Total Payment");
     doc.setTextColor("black");
     doc.text(450, 300 + footerIndex + 100 * index, "$" + total);
@@ -136,16 +142,18 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
       340 + footerIndex + 100 * index,
       " All Prices are in Australian Dollars"
     );
-    doc.setLineWidth(1);
-    doc.line(10, 350 + footerIndex, 600, 350 + footerIndex);
-    doc.setDrawColor(192, 192, 192);
+    //doc.setLineWidth(1);
+    //doc.line(10, 350 + footerIndex, 600, 350 + footerIndex);
+    //doc.setDrawColor(192, 192, 192);
     doc.setFont(fontType, "normal");
     doc.text(
       8,
       370 + footerIndex + 100 * index,
       "  ^GST Paid to Airline on above total"
     );
-    doc.text(450, 370 + footerIndex + 100 * index, "$" + parseFloat(totalGST));
+    if( (travelType === "Domestic") ?
+    doc.text(450, 370 + footerIndex + 100 * index, "$" + parseFloat(totalGST)):
+     doc.text(450, 370 + footerIndex + 100 * index, "$0.00" ));
     doc.setFont(fontType, "bold");
     doc.text(
       10,
@@ -165,10 +173,11 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
 
   const GenerateTotalWithFooter = (
     doc,
+    serviceFeeVal,
     index,
     total,
     totalGST,
-    serviceGSTFee
+    serviceGSTFee,travelType
   ) => {
     doc.text(
       10,
@@ -183,34 +192,41 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
     doc.setDrawColor(192, 192, 192);
     doc.setFont(fontType, "bold");
     if (
-      serviceGSTFee !== ""
+      serviceGSTFee !== "" && serviceFeeVal
         ? doc.text(10, 270 + 100 * index, " Goods and Services Tax (GST)")
         : ""
     );
     doc.setFont(fontType, "normal");
     if (
-      serviceGSTFee !== ""
+      serviceGSTFee !== "" && serviceFeeVal
         ? doc.text(10, 280 + 100 * index, " GST paid to Webjet on aboove total")
         : ""
     );
     if (
-      serviceGSTFee !== ""
+      serviceGSTFee !== ""  && serviceFeeVal
         ? doc.text(450, 280 + 100 * index, "$" + serviceGSTFee)
         : ""
     );
+    doc.setLineWidth(1);
+    doc.line(10, 290 + 100 * index, 600, 290 + 100 * index);
+    doc.setDrawColor(192, 192, 192);
+
     let footerIndex = 20;
-    if (serviceGSTFee !== "" ? footerIndex : (footerIndex = 0));
+    if (serviceGSTFee !== "" && serviceFeeVal ? footerIndex : (footerIndex = 0));
     GenerateFooterWithGSTServiceFee(
       doc,
       index,
       total,
       totalGST,
       footerIndex,
-      serviceGSTFee
+    serviceFeeVal,
+    serviceGSTFee,travelType
     );
   };
 
   GenerateHeader(doc);
+  let  serviceFeeVal=false;
+  let travelType="Domestic";
   invoiceDatas.forEach((e, i) => {
     e.Segments.forEach((segment) => {
       flightDetails.push(
@@ -233,6 +249,11 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
       );
       j = j + 1;
     });
+    if(serviceFee !== "" && e.ServiceFeeIsSelected)
+    {
+      serviceFeeVal=true;
+    }
+   travelType=e.TravelType;
     GeneratePassengerFee(
       doc,
       e,
@@ -251,11 +272,14 @@ export const WebJetInvoicePDF = (invoiceDatas, fileName) => {
           ? e.AddtionalCollection.replace(/^0+/, "").replace(/[^\d.-]/g, "")
           : 0.0
       ) +
-      parseFloat(e.ChangeFeeAmount.replace("@", "."));
+      parseFloat(e.ChangeFeeIsSelected? e.ChangeFeeAmount.replace("@", "."):0);
+      total = parseFloat(total) + parseFloat((!serviceFeeVal) ? 0.0 : serviceFee);
+      console.log(total);
     totalGST = parseFloat(totalGST) + parseFloat(e.GSTAmount);
-  });
-  total = parseFloat(total) + parseFloat(serviceFee === "" ? 0.0 : serviceFee);
-  GenerateTotalWithFooter(doc, index, total, totalGST, serviceGSTFee);
+  }); 
+  
+
+  GenerateTotalWithFooter(doc,serviceFeeVal, index, total, totalGST, serviceGSTFee,travelType);
 
   doc.save(fileName);
 };
